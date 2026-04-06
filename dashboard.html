@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    background: #f4f4f4;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+.box {
+    background: white;
+    padding: 20px;
+    margin: 15px auto;
+    width: 300px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>📊 Dashboard</h1>
+
+    <div class="box">
+        <h3>Total Count</h3>
+        <h2 id="total">0</h2>
+    </div>
+
+    <div class="box">
+        <h3>Today Count</h3>
+        <h2 id="today">0</h2>
+    </div>
+
+    <div class="box">
+        <h3>Unique Users</h3>
+        <h2 id="users">0</h2>
+    </div>
+
+    <div class="box">
+        <h3>Individual Count</h3>
+        <h2 id="individual">0</h2>
+    </div>
+
+</div>
+<button onclick="downloadData()">Download Data</button>
+<script>
+
+let currentMobile = localStorage.getItem("mobile");
+
+async function loadStats() {
+    let res = await fetch("/stats");
+    let data = await res.json();
+
+    document.getElementById("total").innerText = data.totalCount;
+    document.getElementById("today").innerText = data.todayCount;
+    document.getElementById("users").innerText = data.uniqueUsers;
+
+    loadIndividual();
+}
+
+async function loadIndividual() {
+    if (!currentMobile) return;
+
+    let res = await fetch(`/stats?mobile=${currentMobile}`);
+    let data = await res.json();
+
+    document.getElementById("individual").innerText = data.individualCount;
+}
+
+loadStats();
+setInterval(loadStats, 3000);
+function downloadData() {
+    window.location.href = "/download";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home</title>
+</head>
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background-image: url("static/background.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    gap: 40px;
+    padding: 20px;
+}
+
+img {
+    width: 350px;
+    max-width: 90%;
+}
+
+.right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    background-color: rgb(3, 128, 57);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    width: 380px;
+    text-align: center;
+}
+
+.container {
+    padding: 30px;
+    width: 380px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 10px;
+    text-align: center;
+}
+
+input, button {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+button {
+    background-color: green;
+    color: white;
+    border: none;
+}
+
+button:hover {
+    background-color: darkgreen;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .main {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    img {
+        width: 250px;
+    }
+
+    .container {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="main">
+
+    <!-- IMAGE -->
+    <div>
+        <!-- ✅ FIXED IMAGE NAME -->
+        <img src="static/Goddess .png">
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+
+        <h2 class="title">శ్రీ మణి ద్వీప వర్ణన శత కోటి పారాయణ మహా యజ్ఞం</h2>
+
+        <div class="container">
+
+            <h2>Total Count: <span id="totalCount">0</span></h2>
+
+            <input type="text" id="name" placeholder="Enter Name">
+            <input type="text" id="mobile" placeholder="Enter Mobile Number">
+            <input type="number" id="count" placeholder="Enter Count">
+
+            <button onclick="submitData()">Submit</button>
+            <button onclick="goDashboard()">View Dashboard</button>
+
+        </div>
+    </div>
+</div>
+<script>
+
+async function submitData() {
+    let name = document.getElementById("name").value.trim();
+    let mobile = document.getElementById("mobile").value.trim();
+    let count = document.getElementById("count").value;
+
+    if (!name || !mobile || !count) {
+        alert("Fill all fields");
+        return;
+    }
+
+    try {
+        let res = await fetch("/submit", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                name: name,
+                mobile: mobile,
+                count: count
+            })
+        });
+
+        let data = await res.json();
+
+        // 🔥 Store mobile for dashboard
+        localStorage.setItem("mobile", mobile);
+
+        alert("Submitted Successfully!");
+
+        // clear inputs
+        document.getElementById("name").value = "";
+        document.getElementById("mobile").value = "";
+        document.getElementById("count").value = "";
+
+        // 🔥 refresh total after submit
+        loadTotal();
+
+    } catch (err) {
+        console.error(err);
+        alert("Server error!");
+    }
+}
+
+async function loadTotal() {
+    try {
+        let res = await fetch("/stats");
+        let data = await res.json();
+
+        document.getElementById("totalCount").innerText = data.totalCount;
+
+    } catch (err) {
+        console.error("Error loading total:", err);
+    }
+}
+
+function goDashboard() {
+    window.location.href = "/dashboard";
+}
+
+// 🔥 Load on page start
+loadTotal();
+
+// 🔥 Auto refresh every 3 seconds
+setInterval(loadTotal, 3000);
+
+</script>
+</body>
+</html>
