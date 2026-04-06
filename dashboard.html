@@ -56,9 +56,9 @@ body {
 <script>
 
 let currentMobile = localStorage.getItem("mobile");
-
+const BASE_URL = "https://srimani.onrender.com";
 async function loadStats() {
-    let res = await fetch("/stats");
+    let res = await fetch("https://srimani.onrender.com/stats");
     let data = await res.json();
 
     document.getElementById("total").innerText = data.totalCount;
@@ -71,7 +71,7 @@ async function loadStats() {
 async function loadIndividual() {
     if (!currentMobile) return;
 
-    let res = await fetch(`/stats?mobile=${currentMobile}`);
+    let res = await fetch(`https://srimani.onrender.com/stats?mobile=${currentMobile}`);
     let data = await res.json();
 
     document.getElementById("individual").innerText = data.individualCount;
@@ -80,7 +80,7 @@ async function loadIndividual() {
 loadStats();
 setInterval(loadStats, 3000);
 function downloadData() {
-    window.location.href = "/download";
+    window.location.href = "https://srimani.onrender.com/download";
 }
 </script>
 

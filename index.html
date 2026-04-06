@@ -127,7 +127,7 @@ async function submitData() {
     }
 
     try {
-        let res = await fetch("/submit", {
+        let res = await fetch("https://srimani.onrender.com/submit", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -160,7 +160,7 @@ async function submitData() {
 
 async function loadTotal() {
     try {
-        let res = await fetch("/stats");
+        let res = await fetch("https://srimani.onrender.com/stats");
         let data = await res.json();
 
         document.getElementById("totalCount").innerText = data.totalCount;
@@ -171,7 +171,8 @@ async function loadTotal() {
 }
 
 function goDashboard() {
-    window.location.href = "/dashboard";
+    window.location.href = "https://srimani.onrender.com/dashboard";
+   
 }
 
 // 🔥 Load on page start
